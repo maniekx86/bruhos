@@ -63,22 +63,3 @@ void qemu_debugcon(char* str) {
     outb(0xe9,'\n');
 }
 
-u16 sqrt(int x){
-    if(x == 0 || x == 1){
-        return x;
-    }
-
-    u32 start = 1, end = 4294967295;
-
-    while (start + 1 < end){
-        int mid = start + (end - start) / 2;
-        if(mid == x/mid){
-            return mid;
-        } else if(mid > x/mid){
-            end = mid;
-        } else{
-            start = mid;
-        }
-    }      
-    return start;
-}

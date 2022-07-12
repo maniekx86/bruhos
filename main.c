@@ -12,6 +12,7 @@ u32 time_ms;
 #include "memaccess.c"
 #include "misc.c"
 #include "mathmisc.c"
+#include "disk.c"
 
 char *vgamem = (u8*)0xB000;
 char *ivt = (u8*)0x0000; 
@@ -106,16 +107,11 @@ void main(void) {
 	interrupt_setup();
 	__asm("sti");
 	outb(0xe9,'1');
-	u32 a=sqrt(4);
+	resetDisk(0);
 	
-	char buf[10];
-	itoa(a, buf, 10);
-	qemu_debugcon(buf);
 	
 	int x=0;
 	int y=0;
-	int w=80;
-	int h=25;
 	u32 t=0;
 	while(1) {
 		x=0;
@@ -131,7 +127,7 @@ void main(void) {
 		t++;
 		sleep(16);
 	}
-	outb(0xe9,'2');
+
     while (1) {
         __asm("nop");
     };
