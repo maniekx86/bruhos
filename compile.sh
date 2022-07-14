@@ -7,11 +7,12 @@ objcopy -O binary main.elf demo.bin
 # create floppy image 1.44 MB
 mformat -i floppy.img -f 1440 -C -v FLOPPY -B boot.bin
 
-# copy operating system to floppy image on fat12 filesystem
-sudo mount -t msdos -o loop floppy.img /mnt
-sudo cp demo.bin /mnt/demo.bin
-sudo umount /mnt
-# create bootloader on image
+# copy operating system to floppy
+mkdir -p /tmp/bruhos/
+sudo mount -t msdos -o loop floppy.img /tmp/bruhos/
+sudo cp demo.bin /tmp/bruhos/demo.bin
+sudo umount /tmp/bruhos/
+
 
 
 

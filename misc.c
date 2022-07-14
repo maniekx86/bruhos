@@ -63,3 +63,9 @@ void qemu_debugcon(char* str) {
     outb(0xe9,'\n');
 }
 
+void sleep(u32 ms) {
+	u32 start=time_ms;
+	while(1) {
+	if(start+ms<time_ms) break;
+	}
+}

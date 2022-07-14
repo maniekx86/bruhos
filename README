@@ -1,3 +1,7 @@
 # x86 operating system
 
+compile: ./compile.sh 
+requires: gcc and mformat
 
+run: qemu-system-i386 -fda ./floppy.img
+debug run: qemu-system-j386 -fda ./floppy.img -debugcon stdio

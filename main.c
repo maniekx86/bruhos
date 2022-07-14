@@ -14,10 +14,7 @@ u32 time_ms;
 #include "mathmisc.c"
 #include "disk.c"
 
-char *vgamem = (u8*)0xB000;
 char *ivt = (u8*)0x0000; 
-
-
 
 void set_timer_phase(u32 hz) {
 	u32 divisor = 1193180 / hz;
@@ -82,31 +79,12 @@ void interrupt_setup() {
 	ivt[0x27] = (u8)((pointer >> 24) & 0xFF);
 }
 
-static inline uint16_t tm_rowcol_to_vidoffset(uint16_t row, uint16_t col, uint16_t numcols)
-{
-    return ((row * numcols + col) * 2);
-}
-
-void setpix(u8 x,u8 y,u8 c) {
-	dispchar(chr(219,c),((y*80)+x)*2);
-}
-
-void sleep(u32 ms) {
-	u32 start=time_ms;
-	while(1) {
-	if(start+ms<time_ms) break;
-	}
-}
-
-
-
-
 void main(void) {
 
 	__asm("cli");
 	interrupt_setup();
 	__asm("sti");
-	outb(0xe9,'1');
+	outb(0xe9,'1'); // qemu debugcon
 	resetDisk(0);
 	
 	
@@ -118,7 +96,7 @@ void main(void) {
 		y=0;
 		while(y<25) {
 			while(x<80) {
-				dispchar(chr('t',15),(y*80+x)*2);
+				dispchar(chr('#',15),(y*80+x)*2);
 				x++;
 			}
 			x=0;
