@@ -1,4 +1,4 @@
-*.bin!boot.bin
+*.bin
 *.img
 *.elf
 *.o

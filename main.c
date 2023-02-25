@@ -1,4 +1,8 @@
-// bruhos 0.01
+// main.c
+/*
+	Main file
+	Written by maniek86 2023 (c) 
+*/
 
 #include <stdint.h>
 
@@ -11,20 +15,9 @@ u32 time_ms;
 
 #include "memaccess.c"
 #include "misc.c"
-#include "mathmisc.c"
+#include "ivt.c"
+#include "math.c"
 #include "disk.c"
-
-char *ivt = (u8*)0x0000; 
-
-void set_timer_phase(u32 hz) {
-	u32 divisor = 1193180 / hz;
-	outb(0x43, 0x36);
-	u8 l = (u8)(divisor & 0xFF);
-	u8 h = (u8)((divisor >> 8) & 0xFF);
-	outb(0x40, l);
-	outb(0x40, h);
-}
-
 
 void nmi_handler() {
 	__asm("pusha");
@@ -52,31 +45,11 @@ void pic_handler() { // PIC is set to 1000 Hz
 }
 
 void interrupt_setup() {
-	
-	u32 pointer;
+	set_timer_hz(1000);
 
-	set_timer_phase(1000);
-
-	// nmi interrupt (0x08) 
-	pointer = (void *)nmi_handler;
-	ivt[0x08] = (u8)(pointer & 0xFF);
-	ivt[0x09] = (u8)((pointer >> 8) & 0xFF);
-	ivt[0x0A] = (u8)((pointer >> 16) & 0xFF);
-	ivt[0x0B] = (u8)((pointer >> 24) & 0xFF);
-
-	// PIC interrupt (0x20)
-	pointer = (void *)pic_handler;
-	ivt[0x20] = (u8)(pointer & 0xFF);
-	ivt[0x21] = (u8)((pointer >> 8) & 0xFF);
-	ivt[0x22] = (u8)((pointer >> 16) & 0xFF);
-	ivt[0x23] = (u8)((pointer >> 24) & 0xFF);
-
-	// keyboard interrupt (0x24)
-	pointer = (void *)keyboard_hanlder;
-	ivt[0x24] = (u8)(pointer & 0xFF);
-	ivt[0x25] = (u8)((pointer >> 8) & 0xFF);
-	ivt[0x26] = (u8)((pointer >> 16) & 0xFF);
-	ivt[0x27] = (u8)((pointer >> 24) & 0xFF);
+	ivt_set_callback(&nmi_handler,2);
+	ivt_set_callback(&pic_handler,8); //8-8=irq 0
+	ivt_set_callback(&keyboard_hanlder,9); //9-8=irq 1
 }
 
 void main(void) {
